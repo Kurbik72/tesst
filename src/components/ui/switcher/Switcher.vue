@@ -11,3 +11,7 @@ const props = defineProps<{
 
 const model = defineModel<SwitcherItem>()
 </script>
+
+<template>
+  <div>{{ props }}, {{ model }}</div>
+</template>
