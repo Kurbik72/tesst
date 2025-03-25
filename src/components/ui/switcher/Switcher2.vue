@@ -1,15 +1,25 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 interface SwitcherItem {
   text: string
   value: string
 }
 
-defineProps<{
+const props = defineProps<{
   options: SwitcherItem[]
   theme?: 'Light' | 'Dark'
+  modelValue: SwitcherItem
 }>()
 
-const currentOption = defineModel<SwitcherItem>()
+const emit = defineEmits<{
+  (e: 'update:modelValue', options: SwitcherItem): void
+}>()
+
+const currentOption = computed<SwitcherItem>({
+  get: () => props.modelValue,
+  set: (value: SwitcherItem) => emit('update:modelValue', value),
+})
 
 const setOption = (option: SwitcherItem) => {
   currentOption.value = option

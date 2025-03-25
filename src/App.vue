@@ -11,7 +11,11 @@ const currentValueForSwitcher = ref<{ text: string; value: string }>()
 <template>
   <div class="wrapper">
     <Button @click="parrentHandler">asdadasdasdasdasd</Button>
-    <Switcher v-model="currentValueForSwitcher" :options="optionsForSwitcher"></Switcher>
+    <Switcher
+      v-model="currentValueForSwitcher"
+      :options="optionsForSwitcher"
+      theme="Light"
+    ></Switcher>
   </div>
 </template>
 

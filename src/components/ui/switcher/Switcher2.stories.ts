@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
-import Switcher from './Switcher.vue'
 import { ref } from 'vue'
+import Switcher2 from './Switcher2.vue'
 
 // argTypes заполняют 1 раз только в МЕТА
-const meta: Meta<typeof Switcher> = {
-  title: 'Components/Switcher',
-  component: Switcher,
+const meta: Meta<typeof Switcher2> = {
+  title: 'Components/Switcher2',
+  component: Switcher2,
   argTypes: {
     theme: {
       control: { type: 'select' },
@@ -24,19 +24,19 @@ const meta: Meta<typeof Switcher> = {
 
 export default meta
 
-type Story = StoryObj<typeof Switcher>
+type Story = StoryObj<typeof Switcher2>
 
 export const Default: Story = {
   args: {
     theme: 'Light',
   },
   render: (args) => ({
-    components: { Switcher },
+    components: { Switcher2 },
     setup: () => {
       const currentValue = ref({ text: 'Admin', value: '1' })
       return { args, currentValue }
     },
-    template: '<Switcher v-bind="args" v-model="currentValue">fgh</Switcher>',
+    template: '<Switcher2 v-bind="args" v-model="currentValue">fgh</Switcher>',
   }),
 }
 
@@ -45,11 +45,11 @@ export const Other: Story = {
     theme: 'Dark',
   },
   render: (args) => ({
-    components: { Switcher },
+    components: { Switcher2 },
     setup: () => {
       const currentValue = ref({ text: 'Guest', value: '3' })
       return { args, currentValue }
     },
-    template: '<Switcher v-bind="args" v-model="currentValue">fgh</Switcher>',
+    template: '<Switcher2 v-bind="args" v-model="currentValue">fgh</Switcher>',
   }),
 }
