@@ -9,9 +9,20 @@ const props = defineProps<{
   theme?: 'Light' | 'Dark'
 }>()
 
-const model = defineModel<SwitcherItem>()
+const currentOption = defineModel<SwitcherItem>()
 </script>
 
 <template>
-  <div>{{ props }}, {{ model }}</div>
+  <div v-for="option of props.options" :key="option.value">
+    <div :class="{ selected: option.value === currentOption?.value }">
+      {{ option.text }}
+      {{ option.value }}
+    </div>
+  </div>
 </template>
+
+<style scoped>
+.selected {
+  background-color: #007aff;
+}
+</style>
