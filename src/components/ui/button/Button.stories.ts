@@ -27,7 +27,7 @@ export const Default: Story = {
   render: (args) => ({
     components: { Button },
     setup: () => ({ args }),
-    template: '<Button v-bind="args">дефолтный текст представления</Button>',
+    template: '<Button v-bind="args">Get Started</Button>',
   }),
 }
 
