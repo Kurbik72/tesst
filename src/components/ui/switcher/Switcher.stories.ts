@@ -14,9 +14,9 @@ const meta: Meta<typeof Switcher> = {
   },
   args: {
     options: [
-      { text: 'Admin', value: '1' },
-      { text: 'User', value: '2' },
-      { text: 'Guest', value: '3' },
+      { text: 'on', value: '1' },
+      { text: 'off', value: '2' },
+      { text: 'on', value: '3' },
     ],
   },
   tags: ['autodocs'],
