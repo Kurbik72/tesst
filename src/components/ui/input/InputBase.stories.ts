@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
-import TextField from './TextField.vue'
+import InputBase from './InputBase.vue'
 
-const meta: Meta<typeof TextField> = {
+const meta: Meta<typeof InputBase> = {
+  title: 'Components/Inputs/InputBase',
+  component: InputBase,
   argTypes: {
     theme: {
       control: { type: 'select' },
@@ -11,34 +13,34 @@ const meta: Meta<typeof TextField> = {
       control: { type: 'text' },
     },
   },
-  title: 'Components/TextField',
-  component: TextField,
+  args: {
+    placeholder: 'Placeholder',
+  },
   tags: ['autodocs'],
 }
 
 export default meta
 
-type Story = StoryObj<typeof TextField>
+type Story = StoryObj<typeof InputBase>
 
-export const Default: Story = {
+export const ThemeLight: Story = {
   args: {
     theme: 'Light',
-    placeholder: 'test',
   },
   render: (args) => ({
-    components: { TextField },
+    components: { InputBase },
     setup: () => ({ args }),
-    template: '<TextField  v-bind="args" />',
+    template: '<InputBase  v-bind="args" />',
   }),
 }
 
-export const other: Story = {
+export const ThemeDark: Story = {
   args: {
     theme: 'Dark',
   },
   render: (args) => ({
-    components: { TextField },
+    components: { InputBase },
     setup: () => ({ args }),
-    template: '<TextField  v-bind="args" />',
+    template: '<InputBase  v-bind="args" />',
   }),
 }
