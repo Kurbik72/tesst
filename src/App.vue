@@ -4,7 +4,11 @@ import { ref } from 'vue'
 
 const parrentHandler = () => {}
 
-const optionsForSwitcher = ref<{ text: string; value: string }[]>([])
+const optionsForSwitcher = ref<{ text: string; value: string }[]>([
+  { text: 'Admin', value: '1' },
+  { text: 'User', value: '2' },
+  { text: 'Guest', value: '3' },
+])
 const currentValueForSwitcher = ref<{ text: string; value: string }>()
 </script>
 
