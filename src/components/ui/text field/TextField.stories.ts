@@ -7,9 +7,8 @@ const meta: Meta<typeof TextField> = {
       control: { type: 'select' },
       options: ['Light', 'Dark'],
     },
-    mode: {
-      control: { type: 'select' },
-      options: ['Default', 'Active', 'Typing', 'Typed'],
+    placeholder: {
+      control: { type: 'text' },
     },
   },
   title: 'Components/TextField',
@@ -23,14 +22,23 @@ type Story = StoryObj<typeof TextField>
 
 export const Default: Story = {
   args: {
-    mode: 'Default',
     theme: 'Light',
+    placeholder: 'test',
   },
   render: (args) => ({
     components: { TextField },
-    setup: () => {
-      args
-    },
-    template: '<TextField r v-bind="args" />',
+    setup: () => ({ args }),
+    template: '<TextField  v-bind="args" />',
+  }),
+}
+
+export const other: Story = {
+  args: {
+    theme: 'Dark',
+  },
+  render: (args) => ({
+    components: { TextField },
+    setup: () => ({ args }),
+    template: '<TextField  v-bind="args" />',
   }),
 }
