@@ -26,7 +26,11 @@ const selectedClasses = computed(() => props.theme === 'Dark')
 
 <template>
   <div :class="listClasses">
-    <div v-for="option of options" :key="option.value" @click="setOption(option)">
+    <div
+      v-for="option of options"
+      :key="option.value"
+      @click="setOption(option)"
+    >
       <div
         :class="[
           { selected: option.value === currentOption?.value },
@@ -43,13 +47,13 @@ const selectedClasses = computed(() => props.theme === 'Dark')
 .switcher {
   cursor: pointer;
   padding: 6px 8px;
-  font-weight: 600;
   width: 30%;
   display: flex;
   justify-content: space-evenly;
   gap: 10px;
   border-radius: 9px;
-  font-family: 'SF Pro Display';
+  font-family: 'SF Display Medium';
+  font-style: normal;
   font-size: 13px;
   align-items: center;
 }

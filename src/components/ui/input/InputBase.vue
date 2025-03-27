@@ -39,10 +39,6 @@ const baseInputClasses = computed(() => ({
 </template>
 
 <style scoped>
-@font-face {
-  font-family: 'SF Disp';
-  src: url('../../../assets/San-Francisco-Pro-Fonts-master/SF-Pro-Display-Medium.otf');
-}
 .BaseInput {
   width: max-content;
   height: max-content;
@@ -76,7 +72,7 @@ const baseInputClasses = computed(() => ({
 .BaseInput__input {
   font-size: 17px;
   font-style: normal;
-  font-family: 'SF Disp';
+  font-family: 'SF Display Medium';
   border: none;
   caret-color: #446bf2;
   background-color: transparent;
