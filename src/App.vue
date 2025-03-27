@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { Button, Switcher } from '@/components/ui'
+import { Button, Switcher, InputBase, CenterAlert } from '@/components/ui'
 import { ref } from 'vue'
-import InputBase from './components/ui/input/InputBase.vue'
 
 const parrentHandler = () => {}
 
@@ -30,6 +29,11 @@ const login = ref('')
       v-model="login"
       theme="Dark"
       placeholder="Введите логин"
+    />
+    <CenterAlert
+      theme="Dark"
+      title="Apple"
+      description="Test"
     />
   </div>
 </template>
