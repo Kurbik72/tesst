@@ -12,7 +12,6 @@ const meta: Meta<typeof CenterAlert> = {
   },
   args: {
     title: 'Loved',
-    description: 'We’ll recommend more like this in Listen Now.',
     theme: 'Light',
   },
   tags: ['autodocs'],
@@ -22,7 +21,22 @@ export default meta
 
 type Story = StoryObj<typeof CenterAlert>
 
-export const Default: Story = {
+export const ThemeLight: Story = {
+  args: {
+    theme: 'Light',
+    description: 'We’ll recommend more like this in Listen Now.',
+  },
+  render: (args) => ({
+    components: { CenterAlert },
+    setup: () => ({ args }),
+    template: '<CenterAlert v-bind="args" />',
+  }),
+}
+export const ThemeDark: Story = {
+  args: {
+    theme: 'Dark',
+    description: 'We’ll recommend more like this in Listen Now.',
+  },
   render: (args) => ({
     components: { CenterAlert },
     setup: () => ({ args }),

@@ -56,6 +56,7 @@ const centerAlertClasses = computed(() => ({
 }
 
 .centerAlert__content {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -68,9 +69,8 @@ const centerAlertClasses = computed(() => ({
 
 .centerAlert__text {
   flex-direction: column;
-  flex-wrap: wrap;
-  box-sizing: border-box;
-  overflow-wrap: break-word;
+  font-style: normal;
+  word-break: break-all;
 }
 
 .centerAlert__title {
@@ -78,16 +78,14 @@ const centerAlertClasses = computed(() => ({
   align-items: center;
   justify-content: center;
   font-family: 'SF Display Medium';
-  font-style: normal;
   font-size: 22px;
 }
 .centerAlert__description {
+  max-width: 100%;
   font-family: 'SF Display Light';
-  flex-wrap: wrap;
   text-align: center;
   padding-top: 2px;
   box-sizing: border-box;
   font-size: 16px;
-  font-style: normal;
 }
 </style>
