@@ -3,7 +3,6 @@ import { computed, ref } from 'vue'
 
 const props = defineProps<{
   theme: 'Light' | 'Dark'
-  formatTime: 'AM' | 'PM'
 }>()
 
 const today = new Date()
@@ -59,7 +58,6 @@ const formatInputMinutes = () => {
 
 <template>
   <div :class="TimePickerClasses">
-    <p>Time</p>
     <div class="TimePicker--time">
       <div class="TimePicker--inputTime">
         <input
@@ -80,7 +78,6 @@ const formatInputMinutes = () => {
           @input="formatInputMinutes"
         />
       </div>
-      {{ formatTime }}
     </div>
   </div>
 </template>

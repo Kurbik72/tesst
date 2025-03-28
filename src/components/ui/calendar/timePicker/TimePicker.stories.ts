@@ -9,10 +9,6 @@ const meta: Meta<typeof TimePicker> = {
       control: { type: 'select' },
       options: ['Light', 'Dark'],
     },
-    formatTime: {
-      control: { type: 'select' },
-      options: ['AM', 'PM'],
-    },
   },
   args: {
     theme: 'Light',
