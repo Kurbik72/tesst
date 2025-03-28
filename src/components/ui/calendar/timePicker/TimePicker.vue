@@ -1,30 +1,25 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 
 const props = defineProps<{
   theme: 'Light' | 'Dark'
 }>()
-
-const getInitialTime = () => {
-  const now = new Date()
-  return {
-    hours: now.toLocaleTimeString('ru-RU', {
-      timeZone: 'Europe/Moscow',
-      hour12: false,
-      hour: '2-digit',
-    }),
-    minutes: now.toLocaleTimeString('ru-RU', {
-      timeZone: 'Europe/Moscow',
-      minute: '2-digit',
-    }),
-  }
+interface Time {
+  hours: string
+  minutes: string
 }
-const time = getInitialTime()
-const { hours = '0', minutes = '0' } = time
-
-const hoursNow = ref(hours)
-const minutesNow = ref(minutes)
-
+const timeModel = defineModel<Time>({
+  default: () => ({
+    hours: new Date().getHours().toString().padStart(2, '0'),
+    minutes: new Date().getMinutes().toString().padStart(2, '0'),
+  }),
+})
+onBeforeMount(() => {
+  timeModel.value = {
+    hours: new Date().getHours().toString().padStart(2, '0'),
+    minutes: new Date().getMinutes().toString().padStart(2, '0'),
+  }
+})
 const blockInvalidKeys = (event: KeyboardEvent) => {
   const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab']
   if (allowedKeys.includes(event.key)) return
@@ -32,22 +27,21 @@ const blockInvalidKeys = (event: KeyboardEvent) => {
     event.preventDefault()
   }
 }
-const formatInputHours = () => {
-  let valHours = hoursNow.value.replace(/\D/g, '')
+const formatTimeComponent = (type: 'hours' | 'minutes') => {
+  const currentValue = timeModel.value[type].replace(/\D/g, '')
+  const max = type === 'hours' ? 23 : 59
 
-  if (valHours !== '' && parseInt(valHours, 10) > 24) {
-    valHours = '24'
-  }
-  hoursNow.value = valHours
-}
-const formatInputMinutes = () => {
-  let valMinutes = minutesNow.value.replace(/\D/g, '')
+  let numeric = parseInt(currentValue, 10) || 0
+  numeric = Math.min(numeric, max)
 
-  if (valMinutes !== '' && parseInt(valMinutes, 10) > 59) {
-    valMinutes = '59'
+  timeModel.value = {
+    ...timeModel.value,
+    [type]: numeric.toString().padStart(2, '0'),
   }
-  minutesNow.value = valMinutes
 }
+
+const formatInputHours = () => formatTimeComponent('hours')
+const formatInputMinutes = () => formatTimeComponent('minutes')
 
 const TimePickerClasses = computed(() => ({
   'TimePicker--container': true,
@@ -61,19 +55,17 @@ const TimePickerClasses = computed(() => ({
     <div class="TimePicker--time">
       <div class="TimePicker--inputTime">
         <input
-          v-model="hoursNow"
+          v-model="timeModel.hours"
           class="TimePicker--hours"
           type="text"
-          maxlength="2"
           @keydown="blockInvalidKeys"
           @input="formatInputHours"
         />
         <span class="time-separator">:</span>
         <input
-          v-model="minutesNow"
+          v-model="timeModel.minutes"
           class="TimePicker--minutes"
           type="text"
-          maxlength="2"
           @keydown="blockInvalidKeys"
           @input="formatInputMinutes"
         />

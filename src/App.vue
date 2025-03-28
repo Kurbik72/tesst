@@ -10,14 +10,18 @@ const optionsForSwitcher = ref<{ text: string; value: string }[]>([
   { text: 'Guest', value: '3' },
 ])
 const currentValueForSwitcher = ref<{ text: string; value: string }>()
-const value = ref('')
 
+interface Time {
+  hours: string
+  minutes: string
+}
+const time = ref<Time>()
 const login = ref('')
 </script>
 
 <template>
   <div class="wrapper">
-    Мой логин: {{ login }}
+    Время регистрации: {{ time?.hours }}: {{ time?.minutes }}
     <div v-if="false">
       <Button @click="parrentHandler">asdadasdasdasdasd</Button>
       <Switcher
@@ -29,13 +33,12 @@ const login = ref('')
     <InputBase
       v-model="login"
       theme="Dark"
-      placeholder="Введите логин"
+      placeholder="время регистрации"
     />
     <TimePicker
-      v-model="value"
+      v-model:="time"
       theme="Light"
     />
-    {{ value }}
   </div>
 </template>
 
