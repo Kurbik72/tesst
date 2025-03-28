@@ -2,5 +2,6 @@ import Button from '@/components/ui/button/Button.vue'
 import Switcher from '@/components/ui/switcher/Switcher.vue'
 import InputBase from '@/components/ui/input/InputBase.vue'
 import CenterAlert from '@/components/ui/centerAlert/CenterAlert.vue'
+import TimePicker from '@/components/ui/calendar/timePicker/TimePicker.vue'
 
-export { Button, Switcher, InputBase, CenterAlert }
+export { Button, Switcher, InputBase, CenterAlert, TimePicker }
