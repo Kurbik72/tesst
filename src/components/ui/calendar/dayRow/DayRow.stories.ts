@@ -17,7 +17,6 @@ const meta: Meta<typeof DayRow> = {
   args: {
     theme: 'Light',
     type: 'Days',
-    options: [7, 8, 9, 10, 11, 12, 13],
   },
   tags: ['autodocs'],
 }
