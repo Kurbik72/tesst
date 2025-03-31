@@ -47,7 +47,7 @@ const selectedClasses = computed(() => props.theme === 'Dark')
 .switcher {
   cursor: pointer;
   padding: 6px 8px;
-  width: 30%;
+  width: 100%;
   display: flex;
   justify-content: space-evenly;
   gap: 10px;
@@ -62,7 +62,7 @@ const selectedClasses = computed(() => props.theme === 'Dark')
   text-align: center;
 }
 .switcher__theme--Light {
-  background-color: #dedee1;
+  background: var(--Fill-Color-Light-Tertiary, rgba(118, 118, 128, 0.12));
 }
 .selected {
   display: flex;

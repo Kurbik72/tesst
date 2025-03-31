@@ -117,9 +117,13 @@ const decrementMonth = () => {
 
 <style scoped>
 .Calendar--container {
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
   width: 343px;
-  height: 383px;
   flex-shrink: 0;
+  border-radius: 13px;
+  box-shadow: 0px 10px 60px 0px rgba(0, 0, 0, 0.1);
 }
 .Calendar--header {
   display: flex;
