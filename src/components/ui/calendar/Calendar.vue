@@ -3,13 +3,20 @@ import { computed, ref } from 'vue'
 import TimePicker from './timePicker/TimePicker.vue'
 import Switcher from '../switcher/Switcher.vue'
 
+const { theme = 'Light' } = defineProps<{
+  theme: 'Light' | 'Dark'
+}>()
 const months = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
-const myComputed = computed(() => {
-  const curr = new Date()
-  const date = new Date(curr.getFullYear(), curr.getMonth(), 1)
+const gridColumnValue = computed(() => {
+  const date = new Date(currentDays.value?.getFullYear(), currentDays.value?.getMonth(), 1)
   return date.getDay() + 1
 })
+const classesForCalendar = computed(() => ({
+  'Calendar--container': true,
+  'Calendar--theme--Light': theme === 'Light',
+  'Calendar--theme--Dark': theme === 'Dark',
+}))
 const currentDays = defineModel<Date>()
 const optionsForSwitcher = ref<{ text: string; value: string }[]>([
   { text: 'AM', value: '1' },
@@ -17,44 +24,50 @@ const optionsForSwitcher = ref<{ text: string; value: string }[]>([
 ])
 const currentFormatTimeValue = ref({ text: 'AM', value: '1' })
 const incrementMonth = () => {
-  // Сохраняем исходную дату для безопасных вычислений
   const sourceDate = new Date(currentDays.value.getTime())
 
-  // Получаем год и месяц исходной даты
   const year = sourceDate.getFullYear()
   const month = sourceDate.getMonth()
   const currentDay = sourceDate.getDate()
 
-  // Вычисляем последний день следующего месяца
   const lastDayNextMonth = new Date(year, month + 2, 0).getDate()
 
-  // Обновляем дату с учётом перехода месяцев и корректного дня
   currentDays.value = new Date(
     year,
     month + 1, // следующий месяц
-    Math.min(currentDay, lastDayNextMonth), // выбираем минимальный день
+    Math.min(currentDay, lastDayNextMonth),
   )
 }
-
 const decrementMonth = () => {
-  if (currentDays.value) {
-    const currentDate = currentDays.value.getDate()
-    currentDays.value.setDate(1)
-    currentDays.value.setMonth(currentDays.value.getMonth() - 1)
-    const daysInMonth = new Date(currentDays.value.getMonth() - 1).getDate()
-    currentDays.value.setDate(Math.min(currentDate, daysInMonth))
-  }
-  console.log(currentDays.value)
+  const sourceDate = new Date(currentDays.value?.getTime())
+
+  const year = sourceDate.getFullYear()
+  const month = sourceDate.getMonth()
+  const currentDay = sourceDate.getDate()
+
+  const lastDayNextMonth = new Date(year, month - 1, 0).getDate()
+
+  currentDays.value = new Date(year, month - 1, Math.min(currentDay, lastDayNextMonth))
 }
+const days = () => {
+  const arrayInDays = new Date(
+    currentDays.value?.getFullYear() || 0,
+    currentDays.value?.getMonth() + 1 || 0,
+    0,
+  )
+  return arrayInDays
+}
+
+console.log(days())
 </script>
 
 <template>
-  <div class="Calendar--container">
+  <div :class="classesForCalendar">
     <div class="Calendar--header">
       <div class="Calendar--monthChange">
         <button type="button">
           <span>
-            {{ currentDays?.toLocaleString('default', { month: 'long' }) }}
+            {{ currentDays?.toLocaleString('en', { month: 'long' }) }}
             {{ currentDays?.getFullYear() }}</span
           >
           <img
@@ -94,7 +107,7 @@ const decrementMonth = () => {
     </div>
     <div class="days">
       <div
-        v-for="day of currentDays?.getDate()"
+        v-for="day of days()?.getDate()"
         :key="day"
         class="Calendar--days"
       >
@@ -104,11 +117,14 @@ const decrementMonth = () => {
     <div class="Calendar--time">
       <span>Time</span>
       <div class="Calendar--AMPM">
-        <TimePicker theme="Light" />
+        <TimePicker
+          theme="Light"
+          class="timepicker"
+        />
         <Switcher
           v-model="currentFormatTimeValue"
+          class="switcher"
           :options="optionsForSwitcher"
-          theme="Light"
         />
       </div>
     </div>
@@ -185,7 +201,7 @@ const decrementMonth = () => {
   font-weight: 400;
 }
 .Calendar--days:first-child {
-  grid-column-start: v-bind(myComputed);
+  grid-column-start: v-bind(gridColumnValue);
 }
 .Calendar--time {
   display: flex;
@@ -205,5 +221,39 @@ const decrementMonth = () => {
   justify-content: center;
   gap: 6px;
   padding-right: 14.5px;
+}
+.Calendar--theme--Dark {
+  background: var(--System-Background-Dark-Elevated-Primary, #1c1c1e);
+}
+.Calendar--theme--Dark .Calendar--time {
+  color: white;
+}
+.Cale .Calendar--theme--Dark .Calendar--months {
+  color: rgba(235, 235, 245, 0.3);
+}
+.Calendar--theme--Dark .Calendar--months {
+  color: rgba(235, 235, 245, 0.3);
+}
+.Calendar--theme--Dark .switcher {
+  background: var(--Fill-Color-Dark-Tertiary, rgba(118, 118, 128, 0.24));
+  color: #ffff;
+}
+.Calendar--theme--Dark .switcher :deep(.selected) {
+  color: #ffff;
+  background: #636366;
+}
+.Calendar--theme--Light .switcher {
+  color: #000;
+  background: var(--Fill-Color-Light-Tertiary, rgba(118, 118, 128, 0.12));
+}
+.Calendar--theme--Dark .timepicker {
+  border-radius: 6px;
+  background: var(--Fill-Color-Dark-Tertiary, rgba(118, 118, 128, 0.24));
+}
+.Calendar--theme--Dark .timepicker :deep(.TimePicker--inputTime) {
+  color: white;
+}
+.Calendar--theme--Dark .timepicker :deep(input) {
+  color: #fff;
 }
 </style>

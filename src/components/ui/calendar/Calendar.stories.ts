@@ -13,7 +13,7 @@ const meta: Meta<typeof Calendar> = {
   },
   args: {
     theme: 'Light',
-    Date: ref(new Date()),
+    Date: new Date(),
   },
   tags: ['autodocs'],
 }
