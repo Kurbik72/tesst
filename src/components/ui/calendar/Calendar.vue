@@ -50,15 +50,13 @@ const decrementMonth = () => {
   currentDays.value = new Date(year, month - 1, Math.min(currentDay, lastDayNextMonth))
 }
 const days = () => {
-  const arrayInDays = new Date(
-    currentDays.value?.getFullYear() || 0,
-    currentDays.value?.getMonth() + 1 || 0,
-    0,
-  )
-  return arrayInDays
+  if (!currentDays.value) return 0
+  const year = currentDays.value.getFullYear()
+  const month = currentDays.value.getMonth()
+  return new Date(year, month + 1, 0).getDate() // Последний день текущего месяца
 }
 
-console.log(days())
+console.log(days(), `dfggd`)
 </script>
 
 <template>
@@ -107,7 +105,7 @@ console.log(days())
     </div>
     <div class="days">
       <div
-        v-for="day of days()?.getDate()"
+        v-for="day of days()"
         :key="day"
         class="Calendar--days"
       >
@@ -132,6 +130,9 @@ console.log(days())
 </template>
 
 <style scoped>
+* {
+  box-sizing: border-box;
+}
 .Calendar--container {
   padding: 8px 16px;
   display: flex;
@@ -144,10 +145,10 @@ console.log(days())
 .Calendar--header {
   display: flex;
   justify-content: space-between;
+  padding-top: 7px;
 }
 .Calendar--monthToggle {
   display: flex;
-  padding-right: 16px;
   gap: 15px;
 }
 .Calendar--monthToggle button {
@@ -179,6 +180,7 @@ console.log(days())
   font-weight: 600;
   color: rgba(60, 60, 67, 0.3);
   display: grid;
+  gap: 16px;
   grid-template-columns: repeat(7, 1fr);
 }
 .days {
@@ -187,8 +189,8 @@ console.log(days())
   color: #ff3b30;
   font-family: 'SF Display Medium';
   display: grid;
+  gap: 14.5px;
   grid-template-columns: repeat(7, 1fr);
-  grid-column-start: 2;
 }
 .Calendar--days {
   display: flex;
@@ -220,7 +222,6 @@ console.log(days())
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding-right: 14.5px;
 }
 .Calendar--theme--Dark {
   background: var(--System-Background-Dark-Elevated-Primary, #1c1c1e);
