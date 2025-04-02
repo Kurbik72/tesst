@@ -7,7 +7,14 @@ const { theme = 'Light' } = defineProps<{
   theme: 'Light' | 'Dark'
 }>()
 const months = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-
+const months_sidebar = Array.from({ length: 12 }, (_, i) =>
+  new Date(0, i).toLocaleString('en-US', { month: 'short' }),
+)
+const isActive = ref(false)
+const onDataClick = () => {
+  isActive.value = !isActive.value
+  console.log(isActive.value)
+}
 const gridColumnValue = computed(() => {
   const date = new Date(currentDays.value?.getFullYear(), currentDays.value?.getMonth(), 1)
   return date.getDay() + 1
@@ -63,7 +70,10 @@ console.log(days(), `dfggd`)
   <div :class="classesForCalendar">
     <div class="Calendar--header">
       <div class="Calendar--monthChange">
-        <button type="button">
+        <button
+          type="button"
+          @click="onDataClick"
+        >
           <span>
             {{ currentDays?.toLocaleString('en', { month: 'long' }) }}
             {{ currentDays?.getFullYear() }}</span
@@ -84,6 +94,17 @@ console.log(days(), `dfggd`)
             alt=""
           />
         </button>
+        <div
+          v-if="isActive"
+          class="Calendar--months-list"
+        >
+          <button
+            v-for="month of months_sidebar"
+            :key="month"
+          >
+            {{ month }}
+          </button>
+        </div>
         <button
           type="button"
           @click="incrementMonth"
@@ -143,9 +164,44 @@ console.log(days(), `dfggd`)
   box-shadow: 0px 10px 60px 0px rgba(0, 0, 0, 0.1);
 }
 .Calendar--header {
+  position: relative;
   display: flex;
   justify-content: space-between;
   padding-top: 7px;
+}
+.Calendar--months-list {
+  animation: fade-in 0.3s ease-out;
+  animation-name: fade-in;
+  background: #ffebea;
+  border-radius: 5px;
+  top: 40px;
+  left: 0;
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+  50% {
+    opacity: 0%;
+  }
+  100% {
+    scale: 1;
+    opacity: 100%;
+    transform: translateY(0);
+  }
+}
+.Calendar--months-list button:hover {
+  background: #c5b6b5;
+  border-radius: 5px;
+}
+.Calendar--months-list button {
+  color: #000000;
+  font-family: 'SF Display Medium';
 }
 .Calendar--monthToggle {
   display: flex;
@@ -183,6 +239,7 @@ console.log(days(), `dfggd`)
   gap: 16px;
   grid-template-columns: repeat(7, 1fr);
 }
+
 .days {
   padding-top: 24px;
   box-sizing: border-box;
@@ -223,6 +280,7 @@ console.log(days(), `dfggd`)
   justify-content: center;
   gap: 6px;
 }
+
 .Calendar--theme--Dark {
   background: var(--System-Background-Dark-Elevated-Primary, #1c1c1e);
 }
