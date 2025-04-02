@@ -23,8 +23,14 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <button :class="computedClass" @click="emit('click')">
-    <img :src="props.src" alt="" />
+  <button
+    :class="computedClass"
+    @click="emit('click')"
+  >
+    <img
+      :src="props.src"
+      alt=""
+    />
     <slot />
   </button>
 </template>
