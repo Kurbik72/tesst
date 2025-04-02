@@ -4,7 +4,7 @@ import TimePicker from './timePicker/TimePicker.vue'
 import Switcher from '../switcher/Switcher.vue'
 
 const { theme = 'Light' } = defineProps<{
-  theme: 'Light' | 'Dark'
+  theme?: 'Light' | 'Dark'
 }>()
 const months = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 const months_sidebar = Array.from({ length: 12 }, (_, i) =>
