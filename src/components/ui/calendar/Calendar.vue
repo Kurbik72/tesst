@@ -62,8 +62,6 @@ const days = () => {
   const month = currentDays.value.getMonth()
   return new Date(year, month + 1, 0).getDate() // Последний день текущего месяца
 }
-
-console.log(days(), `dfggd`)
 </script>
 
 <template>
@@ -137,6 +135,7 @@ console.log(days(), `dfggd`)
       <span>Time</span>
       <div class="Calendar--AMPM">
         <TimePicker
+          data-testid="name"
           theme="Light"
           class="timepicker"
         />
