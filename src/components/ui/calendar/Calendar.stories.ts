@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 import Calendar from './Calendar.vue'
+import { ref, watch } from 'vue'
 
 const meta: Meta<typeof Calendar> = {
   title: 'Components/Calendar/Calendar',
@@ -28,9 +29,24 @@ export const Default: Story = {
     return {
       components: { Calendar },
       setup() {
-        return { args }
+        const date = ref(new Date(args.Date))
+
+        watch(date, (newDate) => {
+          args.Date = newDate.getTime()
+        })
+        watch(
+          () => args.Date,
+          (newValue) => {
+            date.value = new Date(newValue)
+          },
+        )
+
+        return {
+          args,
+          date,
+        }
       },
-      template: '<Calendar v-bind="args" v-model="args.Date" />',
+      template: '<Calendar v-bind="args" v-model="date" />',
     }
   },
 }

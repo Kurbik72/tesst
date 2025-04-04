@@ -1,142 +1,170 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import TimePicker from './timePicker/TimePicker.vue'
 import Switcher from '../switcher/Switcher.vue'
 
 const { theme = 'Light' } = defineProps<{
   theme?: 'Light' | 'Dark'
 }>()
-const months = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-const months_sidebar = Array.from({ length: 12 }, (_, i) =>
+
+// Константы
+const WEEKDAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+const MONTHS_SHORT = Array.from({ length: 12 }, (_, i) =>
   new Date(0, i).toLocaleString('en-US', { month: 'short' }),
 )
+
+// Реактивные состояния
 const isActive = ref(false)
-const onDataClick = () => {
-  isActive.value = !isActive.value
-  console.log(isActive.value)
-}
+const currentDays = defineModel<Date>({ required: true, default: () => new Date() })
+const optionsForSwitcher = ref([
+  { text: 'AM', value: '1' },
+  { text: 'PM', value: '2' },
+])
+
+const currentFormatTimeValue = ref(optionsForSwitcher.value[0])
+// Вычисляемые свойства
 const gridColumnValue = computed(() => {
-  const date = new Date(currentDays.value?.getFullYear(), currentDays.value?.getMonth(), 1)
+  const date = new Date(currentDays.value.getFullYear(), currentDays.value.getMonth(), 1)
   return date.getDay() + 1
 })
-const classesForCalendar = computed(() => ({
+const selectedDay = (index: number) => (activeIndex.value = index)
+
+const calendarClasses = computed(() => ({
   'Calendar--container': true,
   'Calendar--theme--Light': theme === 'Light',
   'Calendar--theme--Dark': theme === 'Dark',
 }))
-const currentDays = defineModel<Date>()
-const optionsForSwitcher = ref<{ text: string; value: string }[]>([
-  { text: 'AM', value: '1' },
-  { text: 'PM', value: '2' },
-])
-const currentFormatTimeValue = ref({ text: 'AM', value: '1' })
-const incrementMonth = () => {
-  const sourceDate = new Date(currentDays.value.getTime())
 
-  const year = sourceDate.getFullYear()
-  const month = sourceDate.getMonth()
-  const currentDay = sourceDate.getDate()
-
-  const lastDayNextMonth = new Date(year, month + 2, 0).getDate()
-
-  currentDays.value = new Date(
-    year,
-    month + 1, // следующий месяц
-    Math.min(currentDay, lastDayNextMonth),
-  )
-}
-const decrementMonth = () => {
-  const sourceDate = new Date(currentDays.value?.getTime())
-
-  const year = sourceDate.getFullYear()
-  const month = sourceDate.getMonth()
-  const currentDay = sourceDate.getDate()
-
-  const lastDayNextMonth = new Date(year, month - 1, 0).getDate()
-
-  currentDays.value = new Date(year, month - 1, Math.min(currentDay, lastDayNextMonth))
-}
-const days = () => {
-  if (!currentDays.value) return 0
+const daysInMonth = computed(() => {
   const year = currentDays.value.getFullYear()
   const month = currentDays.value.getMonth()
-  return new Date(year, month + 1, 0).getDate() // Последний день текущего месяца
+  return new Date(year, month + 1, 0).getDate()
+})
+const actualyDay = () => {
+  const arrayOfDays = Array.from({ length: daysInMonth.value }, (_, i) => i + 1)
+  const currentIndex = arrayOfDays.indexOf(currentDays.value.getDate())
+  return currentIndex
 }
+const activeIndex = ref<null | number>(actualyDay())
+
+// Методы
+const toggleCalendar = () => {
+  isActive.value = !isActive.value
+}
+
+const changeMonth = (direction: 'next' | 'prev') => {
+  const newDate = new Date(currentDays.value)
+  const originalDay = newDate.getDate()
+
+  newDate.setMonth(newDate.getMonth() + (direction === 'next' ? 1 : -1))
+
+  // Корректировка дня, если в новом месяце меньше дней
+  if (newDate.getDate() !== originalDay) {
+    newDate.setDate(0) // Переход на последний день предыдущего месяца
+  }
+
+  currentDays.value = new Date(newDate)
+}
+
+// Инициализация даты
+watchEffect(() => {
+  if (!currentDays.value) {
+    currentDays.value = new Date()
+  }
+})
 </script>
 
 <template>
-  <div :class="classesForCalendar">
+  <div :class="calendarClasses">
     <div class="Calendar--header">
       <div class="Calendar--monthChange">
         <button
           type="button"
-          @click="onDataClick"
+          @click="toggleCalendar"
         >
           <span>
-            {{ currentDays?.toLocaleString('en', { month: 'long' }) }}
-            {{ currentDays?.getFullYear() }}</span
-          >
+            {{ currentDays.toLocaleString('en', { month: 'long' }) }}
+            {{ currentDays.getFullYear() }}
+          </span>
           <img
             src="@/assets/icons/chevron.svg"
-            alt=""
+            alt="Toggle calendar"
           />
         </button>
       </div>
+
       <div class="Calendar--monthToggle">
         <button
           type="button"
-          @click="decrementMonth"
+          @click="changeMonth('prev')"
         >
           <img
             src="@/assets/icons/leftChewron.svg"
-            alt=""
+            alt="Previous month"
           />
         </button>
+
         <div
           v-if="isActive"
           class="Calendar--months-list"
         >
           <button
-            v-for="month of months_sidebar"
+            v-for="month in MONTHS_SHORT"
             :key="month"
+            @click="
+              currentDays = new Date(currentDays?.getFullYear(), MONTHS_SHORT.indexOf(month), 1)
+            "
           >
             {{ month }}
           </button>
         </div>
+
         <button
           type="button"
-          @click="incrementMonth"
+          @click="changeMonth('next')"
         >
           <img
             src="@/assets/icons/rightChewron.svg"
-            alt=""
+            alt="Next month"
           />
         </button>
       </div>
     </div>
+
     <div class="Calendar--months">
       <div
-        v-for="month of months"
-        :key="month"
-      >
-        {{ month }}
-      </div>
-    </div>
-    <div class="days">
-      <div
-        v-for="day of days()"
+        v-for="day in WEEKDAYS"
         :key="day"
-        class="Calendar--days"
       >
         {{ day }}
       </div>
     </div>
+
+    <div
+      class="days"
+      style="gridColumnValue"
+    >
+      <div
+        v-for="(day, index) in daysInMonth"
+        :key="day"
+        class="Calendar--days"
+      >
+        <button
+          type="button"
+          :class="{ active: activeIndex === index }"
+          @click="selectedDay(index)"
+        >
+          {{ day }}
+        </button>
+      </div>
+    </div>
+
     <div class="Calendar--time">
       <span>Time</span>
       <div class="Calendar--AMPM">
         <TimePicker
-          data-testid="name"
-          theme="Light"
+          data-testid="time-picker"
+          :theme="theme"
           class="timepicker"
         />
         <Switcher
@@ -279,7 +307,20 @@ const days = () => {
   justify-content: center;
   gap: 6px;
 }
-
+.Calendar--days button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: #ff3b30;
+  font-family: 'SF Display Medium';
+  font-size: 20px;
+}
+.active {
+  background-color: #ff3b30 !important;
+  color: #ffff !important;
+  border-radius: 100px;
+  width: 32px;
+}
 .Calendar--theme--Dark {
   background: var(--System-Background-Dark-Elevated-Primary, #1c1c1e);
 }
