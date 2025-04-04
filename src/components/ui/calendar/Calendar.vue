@@ -51,7 +51,6 @@ const activeIndex = ref<null | number>(actualyDay())
 const toggleCalendar = () => {
   isActive.value = !isActive.value
 }
-
 const changeMonth = (direction: 'next' | 'prev') => {
   const newDate = new Date(currentDays.value)
   const originalDay = newDate.getDate()
@@ -64,13 +63,22 @@ const changeMonth = (direction: 'next' | 'prev') => {
   }
 
   currentDays.value = new Date(newDate)
+  console.log(currentDays.value)
 }
-
 // Инициализация даты
 watchEffect(() => {
   if (!currentDays.value) {
     currentDays.value = new Date()
   }
+})
+defineExpose({
+  currentDays,
+  gridColumnValue,
+  selectedDay,
+  activeIndex,
+  isActive,
+  changeMonth,
+  toggleCalendar,
 })
 </script>
 
@@ -140,10 +148,7 @@ watchEffect(() => {
       </div>
     </div>
 
-    <div
-      class="days"
-      style="gridColumnValue"
-    >
+    <div class="days">
       <div
         v-for="(day, index) in daysInMonth"
         :key="day"
