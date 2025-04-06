@@ -10,6 +10,7 @@ export default mergeConfig(
       include: ['src/**/*.vi.test.ts'],
       exclude: [...configDefaults.exclude, 'e2e/**'],
       root: fileURLToPath(new URL('./', import.meta.url)),
+      setupFiles: ['./vitest/setup.ts'],
       coverage: {
         enabled: true,
         provider: 'v8',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
+import { computed, ref } from 'vue'
 import TimePicker from './timePicker/TimePicker.vue'
 import Switcher from '../switcher/Switcher.vue'
 
@@ -14,17 +14,29 @@ const MONTHS_SHORT = Array.from({ length: 12 }, (_, i) =>
 )
 
 // Реактивные состояния
+const currentDate = defineModel<Date>({ required: true })
+
 const isActive = ref(false)
-const currentDays = defineModel<Date>({ required: true, default: () => new Date() })
 const optionsForSwitcher = ref([
   { text: 'AM', value: '1' },
   { text: 'PM', value: '2' },
 ])
 
-const currentFormatTimeValue = ref(optionsForSwitcher.value[0])
+const currentFormatTimeModel = computed({
+  get: () => ({
+    text: currentDate.value ? 'AM' : 'PM',
+    value: currentDate.value ? '1' : '2',
+  }),
+  set: (value) => {
+    if (false) {
+      // currentDate.value
+      // +/- 12 часов
+    }
+  },
+})
 // Вычисляемые свойства
 const gridColumnValue = computed(() => {
-  const date = new Date(currentDays.value.getFullYear(), currentDays.value.getMonth(), 1)
+  const date = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth(), 1)
   return date.getDay() + 1
 })
 const selectedDay = (index: number) => (activeIndex.value = index)
@@ -36,13 +48,13 @@ const calendarClasses = computed(() => ({
 }))
 
 const daysInMonth = computed(() => {
-  const year = currentDays.value.getFullYear()
-  const month = currentDays.value.getMonth()
+  const year = currentDate.value.getFullYear()
+  const month = currentDate.value.getMonth()
   return new Date(year, month + 1, 0).getDate()
 })
 const actualyDay = () => {
   const arrayOfDays = Array.from({ length: daysInMonth.value }, (_, i) => i + 1)
-  const currentIndex = arrayOfDays.indexOf(currentDays.value.getDate())
+  const currentIndex = arrayOfDays.indexOf(currentDate.value.getDate())
   return currentIndex
 }
 const activeIndex = ref<null | number>(actualyDay())
@@ -52,7 +64,7 @@ const toggleCalendar = () => {
   isActive.value = !isActive.value
 }
 const changeMonth = (direction: 'next' | 'prev') => {
-  const newDate = new Date(currentDays.value)
+  const newDate = new Date(currentDate.value)
   const originalDay = newDate.getDate()
 
   newDate.setMonth(newDate.getMonth() + (direction === 'next' ? 1 : -1))
@@ -62,15 +74,12 @@ const changeMonth = (direction: 'next' | 'prev') => {
     newDate.setDate(0) // Переход на последний день предыдущего месяца
   }
 
-  currentDays.value = new Date(newDate)
-  console.log(currentDays.value)
+  currentDate.value = new Date(newDate)
 }
-// Инициализация даты
-watchEffect(() => {
-  if (!currentDays.value) {
-    currentDays.value = new Date()
-  }
-})
+
+const setCurrentMonth = (month: string) => {
+  currentDate.value = new Date(currentDate.value.getFullYear(), MONTHS_SHORT.indexOf(month), 1)
+}
 </script>
 
 <template>
@@ -82,8 +91,8 @@ watchEffect(() => {
           @click="toggleCalendar"
         >
           <span data-testid="current-month">
-            {{ currentDays.toLocaleString('en', { month: 'long' }) }}
-            {{ currentDays.getFullYear() }}
+            {{ currentDate.toLocaleString('en', { month: 'long' }) }}
+            {{ currentDate.getFullYear() }}
           </span>
           <img
             src="@/assets/icons/chevron.svg"
@@ -111,9 +120,7 @@ watchEffect(() => {
           <button
             v-for="month in MONTHS_SHORT"
             :key="month"
-            @click="
-              currentDays = new Date(currentDays?.getFullYear(), MONTHS_SHORT.indexOf(month), 1)
-            "
+            @click="setCurrentMonth(month)"
           >
             {{ month }}
           </button>
@@ -145,7 +152,7 @@ watchEffect(() => {
       <div
         v-for="(day, index) in daysInMonth"
         :key="day"
-        data-testid="array of days"
+        data-testid="day"
         class="Calendar--days"
       >
         <button
@@ -162,12 +169,13 @@ watchEffect(() => {
       <span>Time</span>
       <div class="Calendar--AMPM">
         <TimePicker
+          v-model="currentDate"
           data-testid="time-picker"
           :theme="theme"
           class="timepicker"
         />
         <Switcher
-          v-model="currentFormatTimeValue"
+          v-model="currentFormatTimeModel"
           class="switcher"
           :options="optionsForSwitcher"
         />

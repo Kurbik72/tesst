@@ -1,53 +1,44 @@
 <script setup lang="ts">
-import { computed, onBeforeMount } from 'vue'
+import { computed, defineModel, onMounted } from 'vue'
 
 const props = defineProps<{
   theme: 'Light' | 'Dark'
 }>()
-interface Time {
-  hours: string
-  minutes: string
-}
-const timeModel = defineModel<Time>({
-  default: () => ({
-    hours: new Date().getHours().toString().padStart(2, '0'),
-    minutes: new Date().getMinutes().toString().padStart(2, '0'),
-  }),
+
+const currentDayModel = defineModel<Date>({ required: true })
+
+const hourseModel = computed({
+  get: () => currentDayModel.value.getHours(),
+  set: (value) => {
+    currentDayModel.value.setHours(value)
+  },
 })
-onBeforeMount(() => {
-  timeModel.value = {
-    hours: new Date().getHours().toString().padStart(2, '0'),
-    minutes: new Date().getMinutes().toString().padStart(2, '0'),
-  }
+const minutesModel = computed({
+  get: () => currentDayModel.value.getMinutes(),
+  set: (value) => {
+    currentDayModel.value.setMinutes(value)
+  },
 })
-const blockInvalidKeys = (event: KeyboardEvent) => {
-  const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab']
-  if (allowedKeys.includes(event.key)) return
-  if (!/^\d$/.test(event.key)) {
-    event.preventDefault()
-  }
-}
-const formatTimeComponent = (type: 'hours' | 'minutes') => {
-  const currentValue = timeModel.value[type].replace(/\D/g, '')
-  const max = type === 'hours' ? 23 : 59
 
-  let numeric = parseInt(currentValue, 10) || 0
-  numeric = Math.min(numeric, max)
-
-  timeModel.value = {
-    ...timeModel.value,
-    [type]: numeric.toString().padStart(2, '0'),
-  }
-}
-
-const formatInputHours = () => formatTimeComponent('hours')
-const formatInputMinutes = () => formatTimeComponent('minutes')
+const blockInvalidHours = () => {}
+const blockInvalidMinutes = () => {}
+// const blockInvalidKeys = (event: KeyboardEvent) => {
+//   const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab']
+//   if (allowedKeys.includes(event.key)) return
+//   if (!/^\d$/.test(event.key)) {
+//     event.preventDefault()
+//   }
+// }
 
 const TimePickerClasses = computed(() => ({
   'TimePicker--container': true,
   'TimePicker--container--Dark': props.theme === 'Dark',
   'TimePicker--container--Light': props.theme === 'Light',
 }))
+
+onMounted(() => {
+  // currentDayModel.value = new Date('1999-01-01')
+})
 </script>
 
 <template>
@@ -55,19 +46,17 @@ const TimePickerClasses = computed(() => ({
     <div class="TimePicker--time">
       <div class="TimePicker--inputTime">
         <input
-          v-model="timeModel.hours"
+          v-model="hourseModel"
           class="TimePicker--hours"
           type="text"
-          @keydown="blockInvalidKeys"
-          @input="formatInputHours"
+          @keydown="blockInvalidHours"
         />
         <span class="time-separator">:</span>
         <input
-          v-model="timeModel.minutes"
+          v-model="minutesModel"
           class="TimePicker--minutes"
           type="text"
-          @keydown="blockInvalidKeys"
-          @input="formatInputMinutes"
+          @keydown="blockInvalidMinutes"
         />
       </div>
     </div>
