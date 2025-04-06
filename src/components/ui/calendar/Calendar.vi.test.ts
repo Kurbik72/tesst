@@ -31,34 +31,30 @@ describe('Calendar', () => {
 
     expect(wrapper.classes()).toContain('Calendar--theme--Dark')
   })
-  test('Should correct gridColumnValue when modelValue is 2025-04-04 ', () => {
-    createComponent({ props: { modelValue: new Date('2025-04-04') } })
-    const daysElement = wrapper.find('.Calendar--days').element as HTMLElement
-    const styles = window.getComputedStyle(daysElement)
-    
-
-  })
-  test('Should show selected day whe modelValue is 2025-04-04 ', () => {
+  test('Should show selected day when modelValue is 2025-04-04 ', () => {
     createComponent({ props: { modelValue: new Date('2025-04-04') } })
     expect(wrapper.find('.active').text()).toBe('4')
   })
-  test('Should update reactive index when function selectedDay is called', () => {
-    createComponent({})
-
-    wrapper.vm.selectedDay(3)
-    expect(wrapper.vm.activeIndex).toBe(3)
+  test('Should show current Month when modelValue is 2025-04-05 ', () => {
+    createComponent({ props: { modelValue: new Date('2025-04-05') } })
+    expect(wrapper.find('[data-testid="current-month"]').text()).toBe('April 2025')
   })
-  test('Should update boolean value when function toggleCalendar is called', () => {
-    createComponent({})
+  test('Should changeMonth with value === next when user click to next month', async () => {
+    createComponent({ props: { modelValue: new Date('2025-04-05') } })
 
-    wrapper.vm.toggleCalendar()
-    expect(wrapper.vm.isActive).toBe(true)
+    await wrapper.find('[data-testid="next-month"]').trigger('click')
+    expect(wrapper.find('[data-testid="current-month"]').text()).toBe('May 2025')
   })
-  test('Should change month when function changeMonth is called', () => {
-    createComponent({})
-    wrapper.vm.changeMonth('next')
+  test('Should changeMonth with value === prev when user click to prev month', async () => {
+    createComponent({ props: { modelValue: new Date('2025-04-05') } })
 
-    expect(wrapper.vm.currentDays.getMonth()).toBe(4)
+    await wrapper.find('[data-testid="prev-month"]').trigger('click')
+    expect(wrapper.find('[data-testid="current-month"]').text()).toBe('March 2025')
   })
-  test('')
+  test('Should currentDays is 2025-04-05 when user click to next Month', async () => {
+    createComponent({ props: { modelValue: new Date('2025-04-05') } })
+
+    await wrapper.find('[data-testid="next-month"]').trigger('click')
+    expect(wrapper.findAll('[data-testid="array of days"]')).toHaveLength(31)
+  })
 })

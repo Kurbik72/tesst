@@ -71,15 +71,6 @@ watchEffect(() => {
     currentDays.value = new Date()
   }
 })
-defineExpose({
-  currentDays,
-  gridColumnValue,
-  selectedDay,
-  activeIndex,
-  isActive,
-  changeMonth,
-  toggleCalendar,
-})
 </script>
 
 <template>
@@ -90,7 +81,7 @@ defineExpose({
           type="button"
           @click="toggleCalendar"
         >
-          <span>
+          <span data-testid="current-month">
             {{ currentDays.toLocaleString('en', { month: 'long' }) }}
             {{ currentDays.getFullYear() }}
           </span>
@@ -103,6 +94,7 @@ defineExpose({
 
       <div class="Calendar--monthToggle">
         <button
+          data-testid="prev-month"
           type="button"
           @click="changeMonth('prev')"
         >
@@ -128,6 +120,7 @@ defineExpose({
         </div>
 
         <button
+          data-testid="next-month"
           type="button"
           @click="changeMonth('next')"
         >
@@ -152,6 +145,7 @@ defineExpose({
       <div
         v-for="(day, index) in daysInMonth"
         :key="day"
+        data-testid="array of days"
         class="Calendar--days"
       >
         <button
