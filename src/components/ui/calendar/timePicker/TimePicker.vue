@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineModel, onMounted } from 'vue'
+import { computed, defineModel } from 'vue'
 
 const props = defineProps<{
   theme: 'Light' | 'Dark'
@@ -7,22 +7,40 @@ const props = defineProps<{
 
 const currentDayModel = defineModel<Date>({ required: true })
 
-const hourseModel = computed({
+const hoursModel = computed({
   get: () => currentDayModel.value.getHours(),
   set: (value) => {
     currentDayModel.value.setHours(value)
   },
 })
+
 const minutesModel = computed({
   get: () => currentDayModel.value.getMinutes(),
   set: (value) => {
     currentDayModel.value.setMinutes(value)
   },
 })
+const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab']
+const blockInvalidHours = (e: KeyboardEvent) => {
+  const input = e.target as HTMLInputElement
+  const value = input.value + e.key
+  if (allowedKeys.includes(e.key)) return
+  if (!/^([01]?[0-9]|2[0-3])$/.test(value)) {
+    e.preventDefault()
+  }
+}
 
-const blockInvalidHours = () => {}
-const blockInvalidMinutes = () => {}
-// const blockInvalidKeys = (event: KeyboardEvent) => {
+const blockInvalidMinutes = (e: KeyboardEvent) => {
+  const input = e.target as HTMLInputElement
+  const value = input.value + e.key
+
+  if (allowedKeys.includes(e.key)) return
+  if (!/^([0]?[0-9]|[0-5][0-9])$/.test(value)) {
+    e.preventDefault()
+  }
+}
+
+// // const blockInvalidKeys = (event: KeyboardEvent) => {
 //   const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab']
 //   if (allowedKeys.includes(event.key)) return
 //   if (!/^\d$/.test(event.key)) {
@@ -35,10 +53,6 @@ const TimePickerClasses = computed(() => ({
   'TimePicker--container--Dark': props.theme === 'Dark',
   'TimePicker--container--Light': props.theme === 'Light',
 }))
-
-onMounted(() => {
-  // currentDayModel.value = new Date('1999-01-01')
-})
 </script>
 
 <template>
@@ -46,17 +60,17 @@ onMounted(() => {
     <div class="TimePicker--time">
       <div class="TimePicker--inputTime">
         <input
-          v-model="hourseModel"
+          v-model="hoursModel"
           class="TimePicker--hours"
           type="text"
-          @keydown="blockInvalidHours"
+          @keydown="blockInvalidHours($event)"
         />
         <span class="time-separator">:</span>
         <input
           v-model="minutesModel"
           class="TimePicker--minutes"
           type="text"
-          @keydown="blockInvalidMinutes"
+          @keydown="blockInvalidMinutes($event)"
         />
       </div>
     </div>

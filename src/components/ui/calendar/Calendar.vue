@@ -27,10 +27,11 @@ const currentFormatTimeModel = computed({
     text: currentDate.value ? 'AM' : 'PM',
     value: currentDate.value ? '1' : '2',
   }),
-  set: (value) => {
-    if (false) {
-      // currentDate.value
-      // +/- 12 часов
+  set: (value: string) => {
+    if (value === '1') {
+      currentDate.value = new Date(currentDate.value.getTime() - 12 * 60 * 60 * 1000)
+    } else if (value === '2') {
+      currentDate.value = new Date(currentDate.value.getTime() + 12 * 60 * 60 * 1000)
     }
   },
 })
